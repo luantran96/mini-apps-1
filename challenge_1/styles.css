@@ -9,10 +9,33 @@ body,
 
 }
 
+.title {
+
+	text-align: center;
+	font-size: 30px;
+	font-weight: bold;
+}
+
+table {
+	margin: 0px auto;
+}
+
+.scoreBoard {
+	font-size: 20px;
+	font-style: oblique;
+	margin-left: 70px;
+}
+
+#player1, #player2 {
+	font-size: 20px;
+	font-style: italic;
+	margin-left: 30px;
+}
 
 .table-row1, .table-row2, .table-row3 {
 	position: relative;
 }
+
 
 #zerozero, #zeroone, #zerotwo, #onezero, #oneone, #onetwo, #twozero, #twoone, #twotwo {
 	

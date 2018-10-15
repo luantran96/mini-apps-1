@@ -14,7 +14,7 @@ playerTwoMoves.id = 2;
 
 var curMove = 1;
 var numMoves = 0;
-var maxNumMoves = 9;
+var maxNumMoves = 8;
 
 var isGameOver = false;
 var lastWinner;
@@ -73,12 +73,21 @@ var resetGame = () => {
 	}
 };
 
-var generateWinningMoves = (table) => {
+var postWinningProcess = (playerId) => {
 
+	lastWinner = playerId;	
+	if (playerId === 1) {
+		alert(player1 + ' wins!');
+		score[player1] += 1 ;
+		updateScore('player1');
+	} else if(playerId === 2){
+		alert(player2 + ' wins!');
+		score[player2] += 1 ;
+		updateScore('player2');
+	}
 
-
-};	
-
+	isGameOver = true;
+};
 
 var verifyWin = (table) => {
 
@@ -91,19 +100,9 @@ var verifyWin = (table) => {
 		table['zerozero'] && table['oneone'] && table['twotwo'] ||
 		table['twozero'] && table['oneone'] && table['zerotwo'] ) {
 
-		if (table.id === 1) {
-			lastWinner = table.id;	
-			score[player1] += 1 ;
-			updateScore('player1');
-			isGameOver = true;
-			resetGame();
-		} else if (table.id === 2) {
-			lastWinner = table.id;
-			score[player2] += 1;
-			updateScore('player2');
-			isGameOver = true;
-			resetGame();
-		}	
+		postWinningProcess(table.id);
+		isGameOver = true;
+		resetGame();
 	}
 	
 }
@@ -115,23 +114,21 @@ function getKeyByValue(value) {
 var handleClick = (event) => {
 
 	if (!isGameOver && numMoves <= maxNumMoves) {
+
 		var clickedId = event.target.id;
 		console.log(clickedId);
-
+		console.log('numMoves:',numMoves);
 		if (curMove === 1) {	// Currently Player 1 
-
-			if (playerTwoMoves[clickedId] === undefined) {
+			if (playerTwoMoves[clickedId] === undefined && playerOneMoves[clickedId] === undefined) {
 			document.getElementById(clickedId).innerHTML = 'X';
 			playerOneMoves[clickedId] = true;
 			curMove = 2;
 			numMoves += 1;
 			verifyWin(playerOneMoves);
-
 			}
 
 		} else if (curMove === 2) {		// Currently Player 2 
-
-			if (playerOneMoves[clickedId] === undefined) {			
+			if (playerOneMoves[clickedId] === undefined && playerTwoMoves[clickedId] === undefined) {			
 			document.getElementById(clickedId).innerHTML = 'O';
 			playerTwoMoves[clickedId] = true;
 			curMove = 1;
@@ -140,7 +137,12 @@ var handleClick = (event) => {
 			}
 
 		}
+	} 
+
+	if (numMoves >= maxNumMoves) {
+		alert('Its a tie!');
 	}
+	
 }
 
 for (var row = 0; row <= 2; row++) {	

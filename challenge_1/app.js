@@ -12,15 +12,16 @@ playerOneMoves.id = 1;
 var playerTwoMoves = {};
 playerTwoMoves.id = 2;
 
-var curMove = 0;
+var curMove = 1;
 var numMoves = 0;
 var maxNumMoves = 9;
 
 var isGameOver = false;
-
+var lastWinner;
 var player1,player2;
 
 var score = {};
+
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -32,6 +33,9 @@ score[player2] = 0;
 
 document.getElementById('player1Name').innerHTML = player1 + ' (X) :';
 document.getElementById('player2Name').innerHTML = player2 + ' (O) :';
+
+console.log('curMove:',curMove);
+
 });
 
 
@@ -40,15 +44,33 @@ document.getElementById('player2Name').innerHTML = player2 + ' (O) :';
 var updateScore = (playerId) => {
 	if (playerId === 'player1') {
 	document.getElementById(playerId).innerHTML = score[player1];
-	} else {
+	} else if(playerId === 'player2') {
 	document.getElementById(playerId).innerHTML = score[player2];
 	}
 };
 
 var resetGame = () => {
 
+	//console.log(document.getElementsByTagName('th'));
 
+	var tableElements = document.getElementsByTagName('th');
 
+	for (var i = 0; i < tableElements.length; i++) {
+		tableElements[i].innerHTML = '';
+	}
+
+	isGameOver = false;
+	numMoves = 0;
+	playerOneMoves = {};
+	playerOneMoves.id = 1;
+	playerTwoMoves = {};
+	playerTwoMoves.id = 2;
+
+	if (lastWinner === 1) {
+		curMove = 1;
+	} else {
+		curMove = 2;
+	}
 };
 
 var generateWinningMoves = (table) => {
@@ -70,16 +92,16 @@ var verifyWin = (table) => {
 		table['twozero'] && table['oneone'] && table['zerotwo'] ) {
 
 		if (table.id === 1) {
-			alert(player1  + ' wins !');
-			isGameOver = true;
+			lastWinner = table.id;	
 			score[player1] += 1 ;
 			updateScore('player1');
-			resetGame();
-		} else {
-			alert(player2  + ' wins !');
 			isGameOver = true;
+			resetGame();
+		} else if (table.id === 2) {
+			lastWinner = table.id;
 			score[player2] += 1;
 			updateScore('player2');
+			isGameOver = true;
 			resetGame();
 		}	
 	}
@@ -92,26 +114,32 @@ function getKeyByValue(value) {
 
 var handleClick = (event) => {
 
-	if (!isGameOver && numMoves < maxNumMoves) {
+	if (!isGameOver && numMoves <= maxNumMoves) {
 		var clickedId = event.target.id;
 		console.log(clickedId);
-		if (curMove % 2) {
+
+		if (curMove === 1) {	// Currently Player 1 
+
 			if (playerTwoMoves[clickedId] === undefined) {
 			document.getElementById(clickedId).innerHTML = 'X';
 			playerOneMoves[clickedId] = true;
-			verifyWin(playerOneMoves);
-			curMove += 1;
+			curMove = 2;
 			numMoves += 1;
+			verifyWin(playerOneMoves);
+
 			}
-		} else {
+
+		} else if (curMove === 2) {		// Currently Player 2 
+
 			if (playerOneMoves[clickedId] === undefined) {			
 			document.getElementById(clickedId).innerHTML = 'O';
 			playerTwoMoves[clickedId] = true;
-			verifyWin(playerTwoMoves);
-			curMove += 1;
+			curMove = 1;
 			numMoves += 1;
+			verifyWin(playerTwoMoves);
 			}
-		}		
+
+		}
 	}
 }
 

@@ -1,5 +1,19 @@
 
 
+var EvenRotationPattern = {
+	'zerozero': 'zerotwo',
+	'zerotwo' : 'twotwo',
+	'twotwo': 'twozero',
+	'twozero': 'zerotwo'
+};
+
+var OddRotationPattern = {
+	'zeroone': 'onetwo',
+	'onetwo' : 'twoone',
+	'twoone': 'onezero',
+	'onezero': 'zeroone'
+};
+
 var translateTable = {};
 
 translateTable['zero'] = 0;
@@ -21,6 +35,7 @@ var lastWinner;
 var player1,player2;
 
 var score = {};
+
 
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -123,6 +138,59 @@ var checkMode = (event) => {
 	console.log('mode:',mode);
 };
 
+var applyRotation = () => {
+
+	// Clear board
+	var tableElements = document.getElementsByTagName('th');
+	for (var i = 0; i < tableElements.length; i++) {
+		tableElements[i].innerHTML = '';
+	}
+
+	// Redraw board
+
+	for ( var location in playerOneMoves) {
+		if (location !== 'id') {
+			console.log('location in playerOneMoves:',location);
+
+			var oldLocationValue = playerOneMoves[location];
+
+			var newLocation = EvenRotationPattern[location] || location;
+
+			if (newLocation !== location) {
+				playerOneMoves[newLocation] = oldLocationValue;
+				document.getElementById(newLocation).innerHTML = 'X';
+			} else {	
+				newLocation = OddRotationPattern[location] || location;	
+				playerOneMoves[newLocation] = oldLocationValue;
+				document.getElementById(newLocation).innerHTML = 'X';
+			}
+		}
+	}
+
+	for ( var location in playerTwoMoves) {
+		if (location !== 'id') {		
+			console.log('location in playerOneMoves:',location);
+			var oldLocationValue = playerOneMoves[location];
+
+			var newLocation = EvenRotationPattern[location] || location;
+
+			if (newLocation !== location) {
+				playerTwoMoves[newLocation] = oldLocationValue;
+				document.getElementById(newLocation).innerHTML = 'O';
+
+			} else {	
+				newLocation = OddRotationPattern[location] || location;	
+				playerTwoMoves[newLocation] = oldLocationValue;
+				document.getElementById(newLocation).innerHTML = 'O';
+			}
+		}
+	}
+
+
+
+};
+
+
 var handleClick = (event) => {
 
 	if (!isGameOver && numMoves <= maxNumMoves) {
@@ -130,25 +198,54 @@ var handleClick = (event) => {
 		var clickedId = event.target.id;
 		console.log(clickedId);
 		console.log('numMoves:',numMoves);
-		if (curMove === 1) {	// Currently Player 1 
-			if (playerTwoMoves[clickedId] === undefined && playerOneMoves[clickedId] === undefined) {
-			document.getElementById(clickedId).innerHTML = 'X';
-			playerOneMoves[clickedId] = true;
-			curMove = 2;
-			numMoves += 1;
-			verifyWin(playerOneMoves);
+
+		if (mode === 'normal') {
+			
+			if (curMove === 1) {	// Currently Player 1 
+				if (!playerTwoMoves[clickedId] && !playerOneMoves[clickedId]) {
+				document.getElementById(clickedId).innerHTML = 'X';
+				playerOneMoves[clickedId] = true;
+				curMove = 2;
+				numMoves += 1;
+				verifyWin(playerOneMoves);
+				}
+
+			} else if (curMove === 2) {		// Currently Player 2 
+				if (!playerOneMoves[clickedId] && !playerTwoMoves[clickedId]) {			
+				document.getElementById(clickedId).innerHTML = 'O';
+				playerTwoMoves[clickedId] = true;
+				curMove = 1;
+				numMoves += 1;
+				verifyWin(playerTwoMoves);
+				}
+
+			}
+		
+		} else if(mode === 'hard') {
+
+			if (curMove === 1) {	// Currently Player 1 
+				if (!playerTwoMoves[clickedId] && !playerOneMoves[clickedId]) {
+				document.getElementById(clickedId).innerHTML = 'X';
+				playerOneMoves[clickedId] = true;
+				applyRotation();
+				curMove = 2;
+				numMoves += 1;
+				verifyWin(playerOneMoves);
+				}
+
+			} else if (curMove === 2) {		// Currently Player 2 
+				if (!playerOneMoves[clickedId] && !playerTwoMoves[clickedId]) {			
+				document.getElementById(clickedId).innerHTML = 'O';
+				playerTwoMoves[clickedId] = true;
+				applyRotation();
+				curMove = 1;
+				numMoves += 1;
+				verifyWin(playerTwoMoves);
+				}
+
 			}
 
-		} else if (curMove === 2) {		// Currently Player 2 
-			if (playerOneMoves[clickedId] === undefined && playerTwoMoves[clickedId] === undefined) {			
-			document.getElementById(clickedId).innerHTML = 'O';
-			playerTwoMoves[clickedId] = true;
-			curMove = 1;
-			numMoves += 1;
-			verifyWin(playerTwoMoves);
-			}
-
-		}
+		} 
 	} 
 
 }

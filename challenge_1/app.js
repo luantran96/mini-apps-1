@@ -31,6 +31,9 @@ player2 = prompt('Player 2 name:');
 score[player1] = 0;
 score[player2] = 0;
 
+var mode = 'normal';
+
+
 document.getElementById('player1Name').innerHTML = player1 + ' (X) :';
 document.getElementById('player2Name').innerHTML = player2 + ' (O) :';
 
@@ -109,7 +112,16 @@ var verifyWin = (table) => {
 
 function getKeyByValue(value) {
   return Object.keys(translateTable).find(key => translateTable[key] === value);
-}
+};
+
+var handleReset = (event) => {
+	resetGame();
+};
+
+var checkMode = (event) => {
+	mode = event.target.id;
+	console.log('mode:',mode);
+};
 
 var handleClick = (event) => {
 
@@ -139,10 +151,6 @@ var handleClick = (event) => {
 		}
 	} 
 
-	if (numMoves >= maxNumMoves) {
-		alert('Its a tie!');
-	}
-	
 }
 
 for (var row = 0; row <= 2; row++) {	
@@ -150,5 +158,9 @@ for (var row = 0; row <= 2; row++) {
 		document.getElementById(getKeyByValue(row).concat(getKeyByValue(column))).addEventListener('click',handleClick);
 	}
 }
+
+	document.getElementById('reset').addEventListener('click',resetGame);
+	document.getElementById('normal').addEventListener('click',checkMode);
+	document.getElementById('hard').addEventListener('click',checkMode);
 
 

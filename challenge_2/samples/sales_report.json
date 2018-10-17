@@ -8,7 +8,7 @@
     "children": [
     {
       "firstName": "Beth Jr.",
-      "lastName": "Johnson",
+      "lastName": "Johnson",  
       "county": "San Mateo",
       "city": "Pacifica",
       "role": "Manager",
@@ -44,4 +44,4 @@
       "children": []
     }
   ]
-};
+}

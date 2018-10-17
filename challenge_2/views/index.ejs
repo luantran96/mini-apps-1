@@ -4,13 +4,19 @@
 <body>
 	<h1>Generate CSV report </h1>
 <div class = 'container'>
-<form action = '/' method='post'>
-	  <input type="text" id ='inputBox' name='textValue' ><br>
+<form action = '/' method='post' >
+    <div>
+        <label for="inputBox">JSON data:</label>
+        <input type="file"
+               id="inputBox" name="textValue" multiple />
+    </div>
+
   	  <input type="submit" id='submit' value="Submit">
 </form>
 
 <textarea id ='outputBox'><%=CSVreport%></textarea><br>
 </div>
+
 
 </body>
 

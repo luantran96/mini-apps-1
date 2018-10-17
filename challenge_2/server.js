@@ -39,11 +39,9 @@ var generateCSV = (JSONdata) => {
 	for (var key in curPerson) {
 		if(key !== 'children') {
 			rowData.push(curPerson[key]);
-			//console.log(rowData);
 		} else {
 			rowData.push('\n');
 			result += rowData.join();
-			//console.log(rowData.join());	
 		}
 	}
 
@@ -60,14 +58,24 @@ var generateCSV = (JSONdata) => {
 
 app.post('/', (req,res) => {
 	console.log('\n\n');
-	var JSONdata = JSON.parse(req.body.textValue);
+	console.log('INSIDE SERVER!');
+	console.log(req);
 
+
+	var JSONdata = JSON.parse(req.body.data);
 	var CSVreport = generateCSV(JSONdata);
 
 	console.log('result after generateCSV: \n ', CSVreport);
 
-	res.sendFile(__dirname + '/client/index.html');
-	res.render('index.ejs',{CSVreport});
+	// res.sendFile(__dirname + '/client/index.html');
+	// res.render('index',{CSVreport});
+
+	res.json(CSVreport);
+});
+
+
+app.get('/', (req,res) => {
+	res.render('index');
 });
 
 

@@ -1,25 +1,99 @@
 
-// function postData(url = ``, data = {}) {
-//   // Default options are marked with *
-//     return fetch(url, {
-//         method: "POST", // *GET, POST, PUT, DELETE, etc.
-//         mode: "cors", // no-cors, cors, *same-origin
-//         cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-//         credentials: "same-origin", // include, same-origin, *omit
-//         headers: {
-//             "Content-Type": "application/json; charset=utf-8",
-//             // "Content-Type": "application/x-www-form-urlencoded",
-//         },
-//         redirect: "follow", // manual, *follow, error
-//         referrer: "no-referrer", // no-referrer, *client
-//         body: JSON.stringify(data), // body data type must match "Content-Type" header
-//     })
-//     .then(response => response.json()); // parses response to JSON
-// }
+var outputBox = document.getElementById('outputBox');
+var file;
+var CSVdata;
+
+function extractFilename(path) {
+  if (path.substr(0, 12) == "C:\\fakepath\\")
+    return path.substr(12); // modern browser
+  var x;
+  x = path.lastIndexOf('/');
+  if (x >= 0) // Unix-based path
+    return path.substr(x+1);
+  x = path.lastIndexOf('\\');
+  if (x >= 0) // Windows-based path
+    return path.substr(x+1);
+  return path; // just the file name
+}
 
 
-$('#submit').on('click', () => {
+var fetchData = (data,callback) => {
 
-	console.log($('input').val());
+
+console.log('data in fetchData:',data);
+
+fetch('http://127.0.0.1:4568/',
+	{method:'POST',
+	headers: {
+	'Accept': 'application/json',
+    'Content-Type': 'application/json'
+	},
+	body: JSON.stringify({data})
+})
+.then(function(response) {
+  return response.json();
+})
+.then( (data) => {
+	outputBox.innerHTML = data;
+	CSVdata = data;
+});
+
+}
+
+$('form').on('submit', (event) => {
+	event.preventDefault();
+	console.log('file :', file);
+
+	fetchData(file, () => {
+
+		console.log('done');
+
+	});
 
 });
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURI(text));
+  element.setAttribute('download', filename);
+  element.style.display = 'none';
+  document.body.appendChild(element);
+  console.log($('a'));
+  element.click();
+  document.body.removeChild(element);
+}
+
+
+$('#download').on('click', (event) => {
+	download('file.csv',CSVdata);
+});
+
+  function handleFileSelect(evt) {
+    var files = evt.target.files; // FileList object
+    
+    for (var i = 0, f; f = files[i]; i++) {
+ 		console.log(f);
+		
+		if (f) {
+	       var reader = new FileReader();
+	       reader.readAsText(f, "UTF-8");
+	       reader.onload = function (evt) {
+	           
+	           file = evt.target.result;
+	       }
+	       reader.onerror = function (evt) {
+	           console.log('error');
+	       }
+		}
+
+
+	}
+
+
+
+    //console.log(output);
+  }
+
+
+
+$('#inputBox').on('change', handleFileSelect);

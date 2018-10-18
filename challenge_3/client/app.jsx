@@ -5,30 +5,22 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.moveToForm1 = this.moveToForm1.bind(this);
-
 		this.state = {};
+		this.state.userId = null;
 	};
 
 	moveToForm1 () {
 
-		// axios.post('/checkout', {
-		//     firstName: 'Fred',
-		//     lastName: 'Flintstone'
-		// })
-		// .then ( (response) => {
-		// 	console.log('response: ',response);
-		// });
-
-
-	ReactDOM.render(<Form1 states = {this.state}/>, document.getElementById('app'));
-
-
+		axios.post('/checkout')
+		.then ((response) => {
+			console.log('response: ',response);
+			this.setState({userId: response.data});
+			ReactDOM.render(<Form1 states = {this.state}/>, document.getElementById('app'));
+		});
 	};
 
-
 	render() {
-		return (
-		
+		return (	
 			<div id='Container'>
 				<div>
 				<h1>Multistep checkout </h1>
@@ -38,8 +30,6 @@ class App extends React.Component {
 					</button>
 
 			</div>
-		
-
 		)
 	};
 }
@@ -50,28 +40,28 @@ class Form1 extends React.Component {
 
 	constructor(props) {
 		super(props);
-
-		this.state = {};
-
+		this.state = this.props.states || {};
 		this.state.name = '';
 		this.state.email = '';
 		this.state.password = '';
 
+		console.log('states in Form1: ',this.state);
 
 		this.handleChange = this.handleChange.bind(this);
 		this.moveToForm2 = this.moveToForm2.bind(this);
 	};
 
-
 	moveToForm2 () {
 
-		// this.setState({
-		// 	name: document.getElementById('name').value(),
-		// 	email: document.getElementById('email').value(),
-		// 	password: document.getElementById('password').value()
-		// });
+		axios.post('/form1',{
+			states: this.state
+		})
+		.then ((response) => {
+			console.log('response: ',response);
+			ReactDOM.render(<Form2 states = {this.state} handleChange= {this.handleChange} />, document.getElementById('app'));
+		});
 
-		ReactDOM.render(<Form2 states = {this.state} handleChange= {this.handleChange} />, document.getElementById('app'));
+
 	};
 
 
@@ -141,7 +131,6 @@ class Form2 extends React.Component {
 
 	 	console.log('target.id:', id);
 	 	console.log('target.value:', val);
-
 		    this.setState({
 		    [id] : val
 			});
@@ -152,7 +141,15 @@ class Form2 extends React.Component {
 	};
 
 	moveToForm3 () {
-		ReactDOM.render(<Form3 states = {this.state}/>, document.getElementById('app'));
+		axios.post('/form2',{
+			states: this.state
+		})
+		.then ((response) => {
+			console.log('response: ',response);
+			ReactDOM.render(<Form3 states = {this.state} handleChange= {this.handleChange} />, document.getElementById('app'));
+		});
+
+		//ReactDOM.render(<Form3 states = {this.state}/>, document.getElementById('app'));
 	};
 
 	render() {
@@ -213,9 +210,8 @@ class Form3 extends React.Component {
 
 		console.log('states in Form3:', this.state);
 
-		this.moveToForm2 = this.moveToForm2.bind(this);
+		this.moveToConfirmation = this.moveToConfirmation.bind(this);
 		this.handleChange = this.handleChange.bind(this);
-
 	};
 
 	 handleChange(target) {
@@ -230,8 +226,14 @@ class Form3 extends React.Component {
 			});
 	 }
 
-	moveToForm2 () {
-		ReactDOM.render(<Form2 states = {this.state} />, document.getElementById('app'));
+	moveToConfirmation () {
+		axios.post('/form3',{
+			states: this.state
+		})
+		.then ((response) => {
+			console.log('response: ',response);
+			ReactDOM.render(<Confirmation states = {this.state} handleChange= {this.handleChange} />, document.getElementById('app'));
+		});
 	};
 
 	render() {
@@ -256,8 +258,8 @@ class Form3 extends React.Component {
 					</input>
 				</div>
 
-				<button onClick = {this.moveToForm2}>
-				 Back
+				<button onClick = {this.moveToConfirmation}>
+				 Next
 				</button>
 
 			</div>
@@ -267,6 +269,29 @@ class Form3 extends React.Component {
 	}
 }
 
+class Confirmation extends React.Component {
+
+	constructor(props) {
+
+		super(props);
+
+		this.state = this.props.states;
+
+		console.log('states in Confirmation:',this.state);
+	}
+
+
+	render() {
+
+		return (
+
+			<div>
+			<h1> YOU'RE IN CONFIRMATION </h1>
+			</div>
+
+		)
+	}
+}
 
 
 ReactDOM.render(<App />, document.getElementById('app'));

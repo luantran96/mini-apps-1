@@ -276,18 +276,40 @@ class Confirmation extends React.Component {
 		super(props);
 
 		this.state = this.props.states;
-
 		console.log('states in Confirmation:',this.state);
 	}
 
+	// componentDidMount() {
+	// 	axios.get('/confirmation', {
+	// 	    params: {
+	// 	      userId: this.state.userId
+	// 	    }
+	// 	  })
+	// 	.then ((res) => {
+	// 		console.log(res);
+	// 	});
+
+	// }
+
 
 	render() {
-
 		return (
-
 			<div>
-			<h1> YOU'RE IN CONFIRMATION </h1>
+			<h1>Confirmation Page</h1>
+			<div>Name : {this.state.name}</div>
+			<div>Email : {this.state.email}</div>
+			<div>Password : {this.state.password}</div>
+			<div>Line 1 : {this.state.line1}</div>
+			<div>Line 2 : {this.state.line2}</div>
+			<div>City : {this.state.city}</div>
+			<div>State : {this.state.state}</div>
+			<div>Zipcode : {this.state.zip}</div>
+			<div>Card number : {this.state.cardNum}</div>
+			<div>Expiry Date : {this.state.expiredDate}</div>
+			<div>CVV : {this.state.CVV}</div>
+			<div>Billing Zipcode : {this.state.billingZipCode}</div>
 			</div>
+
 
 		)
 	}

@@ -79,7 +79,6 @@ app.post('/form2', (req,res) => {
 app.post('/form3', (req,res) => {
 
 	console.log('IN /FORM3');
-
 	console.log(req.body);
 	const {userId,cardNum,expiredDate,CVV,billingZipCode} = req.body.states;
 
@@ -95,9 +94,15 @@ app.post('/form3', (req,res) => {
 			});
 		});
 
-
 });
 
 
+app.get('/confirmation', (req,res) => {
+
+	console.log('IN /CONFIRMATION');
+	console.log(req);
+
+	res.end();
+});
 
 app.listen(port, (req,res) =>  console.log(`Example app listening on port ${port}!`));
